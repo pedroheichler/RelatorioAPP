@@ -30,7 +30,19 @@ function sanitizeFilename(name) {
     .replace(/[^a-zA-Z0-9_.-]/g, '_');
 }
 
-async function processRequest({ templateId, data, clinicMeta, professionalMeta, logoBuffer, signatureBuffer, res }) {
+async function fetchImageBuffer(url) {
+  if (!url) return null;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const arrayBuffer = await res.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  } catch {
+    return null;
+  }
+}
+
+async function processRequest({ templateId, data, clinicMeta, professionalMeta, logoBuffer, signatureBuffer, logoUrl, signatureUrl, res }) {
   if (!templateId) return res.status(400).json({ error: 'templateId é obrigatório.' });
 
   const template = getTemplate(templateId);
@@ -39,20 +51,24 @@ async function processRequest({ templateId, data, clinicMeta, professionalMeta, 
   const hasContent = data?.notes || data?.justification || data?.date || data?.patientName;
   if (!hasContent) return res.status(400).json({ error: 'Dados insuficientes para gerar o documento.' });
 
+  // Resolve buffers: arquivo enviado direto tem prioridade; senão faz fetch da URL do Supabase
+  const resolvedLogoBuffer      = logoBuffer      || await fetchImageBuffer(logoUrl);
+  const resolvedSignatureBuffer = signatureBuffer || await fetchImageBuffer(signatureUrl);
+
   const aiContent = await generateContent(templateId, data);
   const sections  = template.buildSections(data, aiContent);
 
   const clinicConfig = {
     name: clinicMeta?.name || '',
     subtitle: clinicMeta?.subtitle || '',
-    logoBuffer: logoBuffer || null,
+    logoBuffer: resolvedLogoBuffer,
   };
 
   const professionalConfig = {
     name: professionalMeta?.name || '',
     title: professionalMeta?.title || '',
     registry: professionalMeta?.registry || '',
-    signatureBuffer: signatureBuffer || null,
+    signatureBuffer: resolvedSignatureBuffer,
   };
 
   const buffer   = await buildDocument({ clinic: clinicConfig, professional: professionalConfig, sections });
@@ -76,7 +92,9 @@ router.post(
       const professionalMeta = JSON.parse(req.body.professional || '{}');
       const logoBuffer       = req.files?.logo?.[0]?.buffer || null;
       const signatureBuffer  = req.files?.signature?.[0]?.buffer || null;
-      await processRequest({ templateId, data, clinicMeta, professionalMeta, logoBuffer, signatureBuffer, res });
+      const logoUrl          = req.body.logoUrl || '';
+      const signatureUrl     = req.body.signatureUrl || '';
+      await processRequest({ templateId, data, clinicMeta, professionalMeta, logoBuffer, signatureBuffer, logoUrl, signatureUrl, res });
     } catch (err) {
       console.error('Erro /gerar-form:', err.message);
       if (!res.headersSent) res.status(500).json({ error: err.message });

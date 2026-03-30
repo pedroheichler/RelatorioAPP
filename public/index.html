@@ -1,502 +1,716 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RelatorioAPP — Psicologia</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #F7F4EF;
-      --surface: #FFFFFF;
-      --border: #E0D9CE;
-      --text: #1A1714;
-      --muted: #8C8479;
-      --accent: #3D6B5E;
-      --accent-light: #EAF2EF;
-      --danger: #C0392B;
-      --recording: #E05C3A;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RelatorioAPP - Gestão Clínica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F7F4EF;
+            --primary-color: #3D6B5E;
+            --text-color: #1A1714;
+            --white: #FFFFFF;
+            --gray: #E5E1DA;
+            --accent-light: #E8F0EE;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-    header {
-      max-width: 720px;
-      margin: 0 auto 48px;
-    }
+        h1, h2, h3 {
+            font-family: 'DM Serif Display', serif;
+            font-weight: 400;
+        }
 
-    header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 2rem;
-      font-weight: 400;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
+        header {
+            background-color: var(--white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    header h1 span {
-      color: var(--accent);
-      font-style: italic;
-    }
+        .logo {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-    header p {
-      margin-top: 6px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      font-weight: 300;
-    }
+        .btn-settings {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 720px;
-      margin: 0 auto 24px;
-    }
+        .btn-settings:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
 
-    .card h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.1rem;
-      font-weight: 400;
-      margin-bottom: 20px;
-      color: var(--text);
-    }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
 
-    .fields-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
+        .step-container {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-    @media (max-width: 520px) {
-      .fields-grid { grid-template-columns: 1fr; }
-    }
+        .step-container.active {
+            display: block;
+        }
 
-    label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    input, select, textarea {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      color: var(--text);
-      background: var(--bg);
-      outline: none;
-      transition: border-color 0.2s;
-    }
+        .step-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-    }
+        .step-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
 
-    /* ---- Voice area ---- */
-    .voice-area {
-      border: 1.5px dashed var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-      margin-bottom: 16px;
-      transition: border-color 0.2s, background 0.2s;
-    }
+        /* Step 1: Templates */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
 
-    .voice-area.recording {
-      border-color: var(--recording);
-      background: #FEF0EC;
-    }
+        .template-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--gray);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-    .btn-mic {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 24px;
-      border-radius: 50px;
-      border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: var(--accent);
-      color: white;
-    }
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-color: var(--primary-color);
+        }
 
-    .btn-mic:hover { opacity: 0.88; }
+        .template-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
 
-    .btn-mic.recording {
-      background: var(--recording);
-      animation: pulse 1.2s infinite;
-    }
+        /* Step 2: Form */
+        .form-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(224,92,58,0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(224,92,58,0); }
-    }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
 
-    .mic-icon { font-size: 1.1rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #666;
+        }
 
-    .transcript-box {
-      margin-top: 14px;
-      text-align: left;
-    }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
 
-    .transcript-box textarea {
-      min-height: 100px;
-      resize: vertical;
-      background: white;
-    }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
 
-    .voice-hint {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 8px;
-    }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+        }
 
-    /* ---- API Key ---- */
-    .api-row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-    }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
 
-    .api-row input { flex: 1; }
+        .btn-voice {
+            background-color: var(--accent-light);
+            border: none;
+            color: var(--primary-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
 
-    /* ---- Generate button ---- */
-    .btn-generate {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: var(--accent);
-      color: white;
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.1rem;
-      font-style: italic;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 4px;
-    }
+        .btn-voice:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
 
-    .btn-generate:hover { opacity: 0.88; }
-    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-voice.recording {
+            background-color: #ff4444;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
 
-    /* ---- Report output ---- */
-    #reportCard {
-      display: none;
-      max-width: 720px;
-      margin: 0 auto;
-    }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
-    .report-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
 
-    .report-header h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.3rem;
-      font-weight: 400;
-    }
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-    .btn-print {
-      padding: 8px 18px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: white;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: var(--text);
-      transition: background 0.2s;
-    }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
 
-    .btn-print:hover { background: var(--bg); }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
 
-    #reportContent {
-      font-size: 0.92rem;
-      line-height: 1.75;
-      color: var(--text);
-    }
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--text-color);
+        }
 
-    #reportContent h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--accent);
-      margin: 20px 0 6px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--accent-light);
-    }
+        /* Modal Settings */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-    #reportContent p { margin-bottom: 8px; }
+        .modal.active {
+            display: flex;
+        }
 
-    .report-date-badge {
-      display: inline-block;
-      background: var(--accent-light);
-      color: var(--accent);
-      font-size: 0.75rem;
-      font-weight: 500;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-    }
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
 
-    /* loading */
-    .loading-dots {
-      display: inline-flex;
-      gap: 5px;
-      align-items: center;
-    }
-    .loading-dots span {
-      width: 6px; height: 6px;
-      background: white;
-      border-radius: 50%;
-      animation: bounce 1s infinite;
-    }
-    .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
-      40% { transform: scale(1); opacity: 1; }
-    }
+        .modal-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .error-msg {
-      background: #FEF0EC;
-      border: 1px solid #F5C6BB;
-      color: var(--danger);
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      margin-top: 12px;
-    }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
 
-    @media print {
-      body { background: white; padding: 0; }
-      header, .card:not(#reportCard) { display: none; }
-      #reportCard { display: block !important; max-width: 100%; }
-      .btn-print, .report-header button { display: none; }
-      .card { border: none; padding: 0; }
-    }
-  </style>
+        .file-input-group {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px dashed var(--gray);
+            text-align: center;
+        }
+
+        .preview-img {
+            max-width: 100px;
+            max-height: 60px;
+            margin-top: 0.5rem;
+            display: none;
+            object-fit: contain;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .step-header h2 {
+                font-size: 2rem;
+            }
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>Relatório<span>App</span></h1>
-  <p>Geração de relatórios de sessão com inteligência artificial</p>
-</header>
+    <header>
+        <a href="#" class="logo" onclick="goToStep(1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            RelatorioAPP
+        </a>
+        <button class="btn-settings" onclick="toggleModal('settingsModal', true)">Configurações</button>
+    </header>
 
-<!-- Dados da sessão -->
-<div class="card">
-  <h2>Dados da Sessão</h2>
-  <div class="fields-grid">
-    <div>
-      <label>Nome do Paciente</label>
-      <input type="text" id="patientName" placeholder="Ex: M.S. (iniciais)" />
+    <main>
+        <!-- Step 1: Template Selection -->
+        <section id="step1" class="step-container active">
+            <div class="step-header">
+                <h2>Escolha um Template</h2>
+                <p>Selecione o tipo de documento que deseja gerar hoje.</p>
+            </div>
+            <div id="templateGrid" class="template-grid">
+                <!-- Templates will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Step 2: Form Filling -->
+        <section id="step2" class="step-container">
+            <div class="step-header">
+                <h2 id="currentTemplateName">Preencher Relatório</h2>
+                <p>Complete os campos abaixo. Use a voz para as anotações.</p>
+            </div>
+            <div class="form-card">
+                <form id="dynamicForm">
+                    <!-- Fields will be rendered here -->
+                </form>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="goToStep(1)">Voltar</button>
+                    <button class="btn btn-primary" onclick="generateDoc()">Gerar Documento .docx</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configurações do Profissional</h3>
+                <button class="close-modal" onclick="toggleModal('settingsModal', false)">&times;</button>
+            </div>
+            <form id="settingsForm">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" name="profName" placeholder="Ex: Dr. João Silva" required>
+                </div>
+                <div class="form-group">
+                    <label>Especialidade / Título</label>
+                    <input type="text" name="profTitle" placeholder="Ex: Psicólogo Clínico">
+                </div>
+                <div class="form-group">
+                    <label>Registro Profissional (CRP/CRM/CRFa)</label>
+                    <input type="text" name="profRegistry" placeholder="Ex: CRP 06/12345">
+                </div>
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--gray);">
+                <div class="form-group">
+                    <label>Nome da Clínica</label>
+                    <input type="text" name="clinicName" placeholder="Ex: Clínica Viver Bem">
+                </div>
+                <div class="form-group">
+                    <label>Subtítulo da Clínica (Endereço/Contato)</label>
+                    <input type="text" name="clinicSubtitle" placeholder="Ex: Av. Paulista, 1000 - (11) 9999-9999">
+                </div>
+                
+                <div class="form-group">
+                    <label>Logo da Clínica</label>
+                    <div class="file-input-group">
+                        <input type="file" id="logoInput" accept="image/*" onchange="handleImageUpload(this, 'logoPreview', 'logoData')">
+                        <img id="logoPreview" class="preview-img">
+                        <input type="hidden" name="logoData">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Assinatura Digitalizada</label>
+                    <div class="file-input-group">
+                        <input type="file" id="signatureInput" accept="image/*" onchange="handleImageUpload(this, 'signaturePreview', 'signatureData')">
+                        <img id="signaturePreview" class="preview-img">
+                        <input type="hidden" name="signatureData">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Salvar Configurações</button>
+            </form>
+        </div>
     </div>
-    <div>
-      <label>Data da Sessão</label>
-      <input type="date" id="sessionDate" />
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Gerando seu documento...</p>
     </div>
-    <div>
-      <label>Número da Sessão</label>
-      <input type="number" id="sessionNumber" placeholder="Ex: 12" min="1" />
-    </div>
-    <div>
-      <label>Modalidade</label>
-      <select id="modality">
-        <option value="presencial">Presencial</option>
-        <option value="online">Online</option>
-      </select>
-    </div>
-  </div>
-</div>
 
-<!-- Anotações por voz -->
-<div class="card">
-  <h2>Anotações da Sessão</h2>
+    <script>
+        let currentStep = 1;
+        let templates = [];
+        let selectedTemplate = null;
+        let recognition = null;
 
-  <div class="voice-area" id="voiceArea">
-    <button class="btn-mic" id="btnMic" onclick="toggleRecording()">
-      <span class="mic-icon">🎙️</span>
-      <span id="micLabel">Iniciar gravação</span>
-    </button>
-    <p class="voice-hint">Fale livremente sobre a sessão. O app transcreve e estrutura o relatório.</p>
-  </div>
+        // Initialize Web Speech API
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  <div class="transcript-box">
-    <label>Transcrição / Anotações</label>
-    <textarea id="transcript" placeholder="A transcrição da voz aparecerá aqui, ou você pode digitar diretamente..."></textarea>
-  </div>
-</div>
+        // DOM Elements
+        const templateGrid = document.getElementById('templateGrid');
+        const dynamicForm = document.getElementById('dynamicForm');
+        const settingsForm = document.getElementById('settingsForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
 
-<!-- Gerar -->
-<div class="card">
-  <div id="errorMsg" class="error-msg" style="display:none;"></div>
-  <button class="btn-generate" id="btnGenerate" onclick="generateReport()">
-    Gerar Relatório
-  </button>
-</div>
+        // Load Initial Data
+        window.onload = () => {
+            loadSettings();
+            fetchTemplates();
+        };
 
-<!-- Relatório gerado -->
-<div class="card" id="reportCard">
-  <div class="report-header">
-    <h2>Relatório de Sessão</h2>
-    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
-  </div>
-  <div id="reportDateBadge" class="report-date-badge"></div>
-  <div id="reportContent"></div>
-</div>
+        async function fetchTemplates() {
+            try {
+                const response = await fetch('/api/templates');
+                templates = await response.json();
+                renderTemplates();
+            } catch (error) {
+                console.error('Erro ao buscar templates:', error);
+                alert('Não foi possível carregar os templates. Verifique se o servidor está rodando.');
+            }
+        }
 
-<script>
-  // Preenche data de hoje por padrão
-  document.getElementById('sessionDate').valueAsDate = new Date();
+        function renderTemplates() {
+            templateGrid.innerHTML = templates.map(t => `
+                <div class="template-card" onclick="selectTemplate('${t.id}')">
+                    <h3>${t.name}</h3>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Clique para preencher</p>
+                </div>
+            `).join('');
+        }
 
-  // ---- Reconhecimento de voz ----
-  let recognition = null;
-  let isRecording = false;
+        function selectTemplate(id) {
+            selectedTemplate = templates.find(t => t.id === id);
+            document.getElementById('currentTemplateName').innerText = selectedTemplate.name;
+            renderFormFields();
+            goToStep(2);
+        }
 
-  function toggleRecording() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Seu navegador não suporta reconhecimento de voz. Use o Chrome ou Edge.');
-      return;
-    }
+        function renderFormFields() {
+            dynamicForm.innerHTML = selectedTemplate.fields.map(field => {
+                let inputHtml = '';
+                
+                if (field.type === 'select') {
+                    inputHtml = `
+                        <select name="${field.key}" required>
+                            <option value="">Selecione...</option>
+                            ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                        </select>
+                    `;
+                } else if (field.type === 'textarea') {
+                    inputHtml = `
+                        <div class="input-wrapper">
+                            <textarea name="${field.key}" placeholder="Digite ou use a voz..." required></textarea>
+                            <button type="button" class="btn-voice" onclick="startVoice(this, '${field.key}')" title="Gravar voz">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    inputHtml = `<input type="${field.type}" name="${field.key}" required>`;
+                }
 
-    if (isRecording) {
-      recognition.stop();
-    } else {
-      startRecording();
-    }
-  }
+                return `
+                    <div class="form-group">
+                        <label>${field.label}</label>
+                        ${inputHtml}
+                    </div>
+                `;
+            }).join('');
+        }
 
-  function startRecording() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'pt-BR';
-    recognition.continuous = true;
-    recognition.interimResults = true;
+        function startVoice(btn, fieldKey) {
+            if (!SR) {
+                alert('Seu navegador não suporta reconhecimento de voz. Use Chrome ou Edge.');
+                return;
+            }
 
-    const textarea = document.getElementById('transcript');
-    const baseText = textarea.value;
-    let interim = '';
+            // Se já estiver gravando, para
+            if (recognition) {
+                recognition.stop();
+                return;
+            }
 
-    recognition.onstart = () => {
-      isRecording = true;
-      document.getElementById('btnMic').classList.add('recording');
-      document.getElementById('micLabel').textContent = 'Gravando... (clique para parar)';
-      document.getElementById('voiceArea').classList.add('recording');
-    };
+            const textarea = document.querySelector(`textarea[name="${fieldKey}"]`);
+            const baseText = textarea.value;
 
-    recognition.onresult = (e) => {
-      let final = '';
-      interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
-        else interim += e.results[i][0].transcript;
-      }
-      textarea.value = baseText + final + interim;
-    };
+            recognition = new SR();
+            recognition.lang = 'pt-BR';
+            recognition.continuous = true;
+            recognition.interimResults = true;
 
-    recognition.onend = () => {
-      isRecording = false;
-      document.getElementById('btnMic').classList.remove('recording');
-      document.getElementById('micLabel').textContent = 'Iniciar gravação';
-      document.getElementById('voiceArea').classList.remove('recording');
-    };
+            recognition.onstart = () => {
+                btn.classList.add('recording');
+            };
 
-    recognition.start();
-  }
+            recognition.onresult = (event) => {
+                let final = '', interim = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) final += event.results[i][0].transcript + ' ';
+                    else interim += event.results[i][0].transcript;
+                }
+                textarea.value = baseText + final + interim;
+            };
 
-  // ---- Gerar relatório via backend ----
-  async function generateReport() {
-    const transcript = document.getElementById('transcript').value.trim();
-    const patientName = document.getElementById('patientName').value.trim() || 'Paciente';
-    const sessionDate = document.getElementById('sessionDate').value;
-    const sessionNumber = document.getElementById('sessionNumber').value || '—';
-    const modality = document.getElementById('modality').value;
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error', event.error);
+                btn.classList.remove('recording');
+                recognition = null;
+            };
 
-    const errorEl = document.getElementById('errorMsg');
-    errorEl.style.display = 'none';
+            recognition.onend = () => {
+                btn.classList.remove('recording');
+                recognition = null;
+            };
 
-    if (!transcript) { showError('Adicione anotações da sessão antes de gerar.'); return; }
+            recognition.start();
+        }
 
-    const btn = document.getElementById('btnGenerate');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+        async function generateDoc() {
+            const formData = new FormData(dynamicForm);
+            const dataObj = {};
+            formData.forEach((value, key) => dataObj[key] = value);
 
-    const dateFormatted = sessionDate
-      ? new Date(sessionDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-      : 'Data não informada';
+            const settings = JSON.parse(localStorage.getItem('relatorioAppSettings') || '{}');
+            
+            if (!settings.profName) {
+                alert('Por favor, preencha as configurações do profissional antes de gerar.');
+                toggleModal('settingsModal', true);
+                return;
+            }
 
-    try {
-      const response = await fetch('/api/relatorio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patientName, sessionDate, sessionNumber, modality, transcript })
-      });
+            loadingOverlay.classList.add('active');
 
-      const data = await response.json();
+            const body = new FormData();
+            body.append('templateId', selectedTemplate.id);
+            body.append('data', JSON.stringify(dataObj));
+            body.append('clinic', JSON.stringify({
+                name: settings.clinicName,
+                subtitle: settings.clinicSubtitle
+            }));
+            body.append('professional', JSON.stringify({
+                name: settings.profName,
+                title: settings.profTitle,
+                registry: settings.profRegistry
+            }));
+            // Envia imagens como arquivo (Blob) para o backend processar corretamente
+            const logoBlob = dataURLtoBlob(settings.logoData);
+            const sigBlob  = dataURLtoBlob(settings.signatureData);
+            if (logoBlob) body.append('logo', logoBlob, 'logo.png');
+            if (sigBlob)  body.append('signature', sigBlob, 'signature.png');
 
-      if (!response.ok) throw new Error(data.error || 'Erro no servidor');
+            try {
+                const response = await fetch('/api/gerar-form', {
+                    method: 'POST',
+                    body: body
+                });
 
-      renderReport(data.report, dateFormatted, patientName, sessionNumber);
+                if (!response.ok) throw new Error('Erro ao gerar documento');
 
-    } catch (err) {
-      showError('Erro ao gerar relatório: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = 'Gerar Relatório';
-    }
-  }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${selectedTemplate.id}_${new Date().getTime()}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                
+                alert('Documento gerado com sucesso!');
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao gerar o documento. Tente novamente.');
+            } finally {
+                loadingOverlay.classList.remove('active');
+            }
+        }
 
-  function renderReport(markdown, dateStr, patientName, sessionNum) {
-    const card = document.getElementById('reportCard');
-    const content = document.getElementById('reportContent');
-    const badge = document.getElementById('reportDateBadge');
+        // Navigation
+        function goToStep(step) {
+            document.querySelectorAll('.step-container').forEach(c => c.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            window.scrollTo(0, 0);
+        }
 
-    badge.textContent = `📅 ${dateStr}  ·  Sessão nº ${sessionNum}  ·  ${patientName}`;
+        // Modal Logic
+        function toggleModal(id, show) {
+            document.getElementById(id).classList.toggle('active', show);
+        }
 
-    // Converte markdown simples para HTML
-    let html = markdown
-      .replace(/### (.+)/g, '<h3>$1</h3>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br/>');
+        // Settings Management
+        settingsForm.onsubmit = (e) => {
+            e.preventDefault();
+            const formData = new FormData(settingsForm);
+            const settings = {};
+            formData.forEach((value, key) => settings[key] = value);
+            
+            localStorage.setItem('relatorioAppSettings', JSON.stringify(settings));
+            alert('Configurações salvas!');
+            toggleModal('settingsModal', false);
+        };
 
-    html = '<p>' + html + '</p>';
-    content.innerHTML = html;
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('relatorioAppSettings') || '{}');
+            if (settings.profName) {
+                for (let key in settings) {
+                    const input = settingsForm.querySelector(`[name="${key}"]`);
+                    if (input) input.value = settings[key];
+                }
+                
+                if (settings.logoData) {
+                    const preview = document.getElementById('logoPreview');
+                    preview.src = settings.logoData;
+                    preview.style.display = 'block';
+                }
+                if (settings.signatureData) {
+                    const preview = document.getElementById('signaturePreview');
+                    preview.src = settings.signatureData;
+                    preview.style.display = 'block';
+                }
+            }
+        }
 
-    card.style.display = 'block';
-    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+        function dataURLtoBlob(dataURL) {
+            if (!dataURL || !dataURL.startsWith('data:')) return null;
+            try {
+                const [header, data] = dataURL.split(',');
+                const mime = header.match(/:(.*?);/)[1];
+                const binary = atob(data);
+                const arr = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+                return new Blob([arr], { type: mime });
+            } catch { return null; }
+        }
 
-  function showError(msg) {
-    const el = document.getElementById('errorMsg');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-</script>
+        function handleImageUpload(input, previewId, hiddenInputName) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result;
+                    document.getElementById(previewId).src = base64;
+                    document.getElementById(previewId).style.display = 'block';
+                    settingsForm.querySelector(`[name="${hiddenInputName}"]`).value = base64;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>
+

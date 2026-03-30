@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const Anthropic = require('@anthropic-ai/sdk');
+const Groq = require('groq-sdk');
 const generateRoute = require('./src/docx/generateRoute');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,7 +14,7 @@ app.use(express.static('public'));
 // Rotas de geração de documentos
 app.use('/api', generateRoute);
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // ---- Rota principal: gerar relatório ----
 app.post('/api/relatorio', async (req, res) => {
@@ -50,22 +50,20 @@ INSTRUÇÕES:
 - Formate com títulos claros (use ### para os títulos das seções)`;
 
   try {
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const completion = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 1500,
       messages: [{ role: 'user', content: prompt }],
     });
-
-    const reportText = message.content[0].text;
+    const reportText = completion.choices[0].message.content;
 
     return res.json({
       success: true,
       report: reportText,
-      usage: message.usage, // tokens usados (útil pra monitorar custo)
     });
 
   } catch (err) {
-    console.error('Erro na API Anthropic:', err.message);
+    console.error('Erro na API Groq:', err.message);
     return res.status(500).json({ error: 'Erro ao gerar relatório: ' + err.message });
   }
 });

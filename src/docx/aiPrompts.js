@@ -1,14 +1,11 @@
 /**
  * aiPrompts.js
  *
- * Para cada template, define o prompt enviado ao Claude.
- * O Claude responde em JSON com as seções do documento.
- * Isso separa o conteúdo gerado do layout — o buildDocument.js
- * só monta o .docx, sem se preocupar com o que escrever.
+ * Usa Claude (Anthropic) para gerar o conteúdo dos documentos.
  */
 
-const Anthropic = require('@anthropic-ai/sdk');
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const Groq = require('groq-sdk');
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // ─────────────────────────────────────────────
 // Prompts por template
@@ -148,22 +145,21 @@ async function generateContent(templateId, data) {
   if (!promptFn) throw new Error(`Template "${templateId}" não tem prompt definido.`);
 
   const prompt = promptFn(data);
-
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+  const completion = await client.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
     max_tokens: 2000,
     messages: [{ role: 'user', content: prompt }],
   });
 
-  const raw = message.content[0].text.trim();
+  const raw = completion.choices[0].message.content.trim();
 
-  // Remove possíveis backticks caso o modelo os inclua
+  // Remove possíveis backticks
   const clean = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
 
   try {
     return JSON.parse(clean);
   } catch (err) {
-    throw new Error(`Erro ao parsear JSON do Claude: ${err.message}\nResposta recebida:\n${raw}`);
+    throw new Error(`Erro ao parsear JSON do Groq: ${err.message}\nResposta:\n${raw}`);
   }
 }
 
