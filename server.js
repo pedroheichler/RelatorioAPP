@@ -73,6 +73,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ RelatorioAPP rodando em http://localhost:${PORT}`);
-});
+// Dev local
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ RelatorioAPP rodando em http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
