@@ -1,4 +1,4 @@
-# RelatorioAPP 🧠
+# RelatorioAPP 
 
 Gerador de documentos clínicos com IA para profissionais de saúde.
 Psicólogos, fonoaudiólogos, terapeutas ocupacionais — solo ou em clínica.
@@ -79,10 +79,3 @@ JSON puro (sem imagens, para testes/integrações).
 
 ### GET /api/templates
 Lista todos os templates disponíveis com seus campos.
-
-## Próximos passos
-
-- [ ] Login (Supabase Auth)
-- [ ] Histórico de documentos por profissional
-- [ ] Deploy no Railway + Vercel
-- [ ] Whisper para transcrição mais precisa
