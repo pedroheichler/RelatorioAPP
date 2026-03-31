@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const Groq = require('groq-sdk');
 const generateRoute = require('./src/docx/generateRoute');
 
@@ -9,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rotas de geração de documentos
 app.use('/api', generateRoute);
