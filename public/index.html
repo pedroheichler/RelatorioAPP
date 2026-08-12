@@ -2,715 +2,278 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RelatorioAPP - Gestão Clínica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Transforma anotações ditadas em documentos clínicos .docx prontos para assinar.">
+    <meta name="theme-color" content="#35655A">
+    <title>RelatorioAPP — Documentos Clínicos</title>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/icons/icon-192.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="RelatorioAPP">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #F7F4EF;
-            --primary-color: #3D6B5E;
-            --text-color: #1A1714;
-            --white: #FFFFFF;
-            --gray: #E5E1DA;
-            --accent-light: #E8F0EE;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3 {
-            font-family: 'DM Serif Display', serif;
-            font-weight: 400;
-        }
-
-        header {
-            background-color: var(--white);
-            padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-settings {
-            background: none;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .btn-settings:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        main {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .step-container {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .step-container.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .step-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .step-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Step 1: Templates */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .template-card {
-            background-color: var(--white);
-            padding: 2rem;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--gray);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border-color: var(--primary-color);
-        }
-
-        .template-card h3 {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        /* Step 2: Form */
-        .form-card {
-            background-color: var(--white);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--gray);
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary-color);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .btn-voice {
-            background-color: var(--accent-light);
-            border: none;
-            color: var(--primary-color);
-            width: 44px;
-            height: 44px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .btn-voice:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-voice.recording {
-            background-color: #ff4444;
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-
-        .btn-secondary {
-            background-color: var(--gray);
-            color: var(--text-color);
-        }
-
-        /* Modal Settings */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--white);
-            padding: 2rem;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-header {
-            margin-bottom: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .file-input-group {
-            background-color: var(--bg-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px dashed var(--gray);
-            text-align: center;
-        }
-
-        .preview-img {
-            max-width: 100px;
-            max-height: 60px;
-            margin-top: 0.5rem;
-            display: none;
-            object-fit: contain;
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255,255,255,0.8);
-            z-index: 2000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--gray);
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 600px) {
-            .step-header h2 {
-                font-size: 2rem;
+    <script>
+        // Aplica o tema antes da primeira pintura: sem isto, quem usa modo
+        // escuro leva um flash branco a cada carregamento.
+        try {
+            const saved = localStorage.getItem('relatorioAppTheme');
+            if (saved === 'dark' || saved === 'light') {
+                document.documentElement.setAttribute('data-theme', saved);
             }
-            .template-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+        } catch (e) { /* localStorage bloqueado: segue no tema do sistema */ }
+    </script>
+    <script src="/app.js" defer></script>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo" onclick="goToStep(1)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <button type="button" class="logo" id="homeBtn" aria-label="Início">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             RelatorioAPP
-        </a>
-        <button class="btn-settings" onclick="toggleModal('settingsModal', true)">Configurações</button>
+        </button>
+
+        <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-sm" id="installBtn" hidden>Instalar</button>
+
+            <button type="button" class="icon-btn" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Tema">
+                <svg id="themeIcon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+
+            <button type="button" class="icon-btn" id="openHistory" aria-label="Histórico de documentos" title="Histórico">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+            </button>
+
+            <button type="button" class="icon-btn" id="openSettings" aria-label="Configurações" title="Configurações">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+        </div>
     </header>
 
     <main>
-        <!-- Step 1: Template Selection -->
-        <section id="step1" class="step-container active">
+        <ol class="stepper" id="stepper">
+            <li data-step="1"><span class="dot">1</span> <span>Documento</span></li>
+            <li data-step="2"><span class="dot">2</span> <span>Ditar</span></li>
+            <li data-step="3"><span class="dot">3</span> <span>Revisar</span></li>
+        </ol>
+
+        <!-- ── Passo 1 — início ── -->
+        <section id="step1" class="step active" aria-labelledby="step1Title">
             <div class="step-header">
-                <h2>Escolha um Template</h2>
-                <p>Selecione o tipo de documento que deseja gerar hoje.</p>
+                <h2 id="step1Title">O que você precisa registrar?</h2>
+                <p id="greeting">Escolha o tipo de documento para começar.</p>
             </div>
-            <div id="templateGrid" class="template-grid">
-                <!-- Templates will be loaded here -->
+
+            <div class="home-block" id="resumeBlock" hidden>
+                <p class="section-label">Continuar de onde parou</p>
+                <div class="stack" id="resumeList"></div>
+            </div>
+
+            <div class="home-block">
+                <p class="section-label">Novo documento</p>
+                <div id="templateGrid" class="template-grid"></div>
+            </div>
+
+            <div class="home-block" id="recentBlock" hidden>
+                <p class="section-label">Gerados recentemente</p>
+                <div class="stack" id="recentList"></div>
             </div>
         </section>
 
-        <!-- Step 2: Form Filling -->
-        <section id="step2" class="step-container">
+        <!-- ── Passo 2 — dados e ditado ── -->
+        <section id="step2" class="step" aria-labelledby="step2Title">
             <div class="step-header">
-                <h2 id="currentTemplateName">Preencher Relatório</h2>
-                <p>Complete os campos abaixo. Use a voz para as anotações.</p>
+                <h2 id="step2Title">Preencher</h2>
+                <p>Dite as anotações — o resto a IA organiza.</p>
             </div>
-            <div class="form-card">
-                <form id="dynamicForm">
-                    <!-- Fields will be rendered here -->
-                </form>
-                <div class="actions">
-                    <button class="btn btn-secondary" onclick="goToStep(1)">Voltar</button>
-                    <button class="btn btn-primary" onclick="generateDoc()">Gerar Documento .docx</button>
+
+            <div class="notice" id="draftNotice" hidden>
+                <span>📝 <strong>Rascunho recuperado.</strong> Você tinha começado este documento.</span>
+                <button type="button" class="btn btn-quiet btn-sm" id="discardDraft">Começar do zero</button>
+            </div>
+
+            <div class="card">
+                <div class="patient-bar" id="patientBar" hidden></div>
+                <form id="dataForm" novalidate></form>
+
+                <p class="hint">
+                    🔒 As anotações vão para um provedor de IA (Groq) para redigir o texto.
+                    O <strong>nome do paciente não é enviado</strong> — entra no documento localmente.
+                </p>
+
+                <div class="actionbar">
+                    <button type="button" class="btn btn-quiet" id="backToTemplates">Voltar</button>
+                    <div class="grow">
+                        <button type="button" class="btn btn-primary" id="generateBtn">Gerar texto</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Passo 3 — revisão ── -->
+        <section id="step3" class="step" aria-labelledby="step3Title">
+            <div class="step-header">
+                <h2 id="step3Title">Revise antes de baixar</h2>
+                <p>Este é exatamente o texto que vai para o documento.</p>
+            </div>
+
+            <div class="notice warn">
+                <span>⚠️ <strong>Confira tudo.</strong> O documento sai com o seu nome e registro profissional, e texto de IA pode conter imprecisões.</span>
+            </div>
+
+            <div class="card">
+                <dl class="summary" id="summary"></dl>
+                <div id="reviewSections"></div>
+
+                <div class="notice accent" id="postDownload" hidden>
+                    <span>✅ <strong>Salvo no histórico.</strong> Atendendo em sequência?</span>
+                    <button type="button" class="btn btn-outline btn-sm" id="nextPatientBtn">Próximo paciente</button>
+                    <button type="button" class="btn btn-quiet btn-sm" id="newTypeBtn">Outro documento</button>
+                </div>
+
+                <div class="actionbar">
+                    <button type="button" class="btn btn-quiet" id="backToForm">Voltar</button>
+                    <div class="grow">
+                        <button type="button" class="btn btn-quiet" id="copyAllBtn" title="Copiar para colar em outro sistema">Copiar texto</button>
+                        <button type="button" class="btn btn-outline" id="regenerateBtn">Gerar de novo</button>
+                        <button type="button" class="btn btn-primary" id="downloadBtn">Baixar .docx</button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
+    <!-- ── Configurações ── -->
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>Configurações do Profissional</h3>
-                <button class="close-modal" onclick="toggleModal('settingsModal', false)">&times;</button>
+            <div class="modal-head">
+                <h3 id="settingsTitle">Configurações</h3>
+                <button type="button" class="icon-btn" data-close-modal="settingsModal" aria-label="Fechar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
-            <form id="settingsForm">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" name="profName" placeholder="Ex: Dr. João Silva" required>
-                </div>
-                <div class="form-group">
-                    <label>Especialidade / Título</label>
-                    <input type="text" name="profTitle" placeholder="Ex: Psicólogo Clínico">
-                </div>
-                <div class="form-group">
-                    <label>Registro Profissional (CRP/CRM/CRFa)</label>
-                    <input type="text" name="profRegistry" placeholder="Ex: CRP 06/12345">
-                </div>
-                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--gray);">
-                <div class="form-group">
-                    <label>Nome da Clínica</label>
-                    <input type="text" name="clinicName" placeholder="Ex: Clínica Viver Bem">
-                </div>
-                <div class="form-group">
-                    <label>Subtítulo da Clínica (Endereço/Contato)</label>
-                    <input type="text" name="clinicSubtitle" placeholder="Ex: Av. Paulista, 1000 - (11) 9999-9999">
-                </div>
-                
-                <div class="form-group">
-                    <label>Logo da Clínica</label>
-                    <div class="file-input-group">
-                        <input type="file" id="logoInput" accept="image/*" onchange="handleImageUpload(this, 'logoPreview', 'logoData')">
-                        <img id="logoPreview" class="preview-img">
-                        <input type="hidden" name="logoData">
-                    </div>
-                </div>
+            <div class="modal-body">
+                <form id="settingsForm">
+                    <fieldset>
+                        <legend>Identificação</legend>
+                        <div class="field">
+                            <label for="profName">Nome completo <span class="req">*</span></label>
+                            <input type="text" id="profName" name="profName" placeholder="Ex: Ana Souza" required>
+                        </div>
+                        <div class="field">
+                            <label for="profTitle">Especialidade / título <span class="optional">(opcional)</span></label>
+                            <input type="text" id="profTitle" name="profTitle" placeholder="Ex: Psicóloga Clínica">
+                        </div>
+                        <div class="field" style="margin-bottom:0">
+                            <label for="profRegistry">Registro profissional <span class="optional">(opcional)</span></label>
+                            <input type="text" id="profRegistry" name="profRegistry" placeholder="Ex: CRP 06/12345">
+                        </div>
+                    </fieldset>
 
-                <div class="form-group">
-                    <label>Assinatura Digitalizada</label>
-                    <div class="file-input-group">
-                        <input type="file" id="signatureInput" accept="image/*" onchange="handleImageUpload(this, 'signaturePreview', 'signatureData')">
-                        <img id="signaturePreview" class="preview-img">
-                        <input type="hidden" name="signatureData">
-                    </div>
-                </div>
+                    <fieldset>
+                        <legend>Como a IA deve escrever</legend>
+                        <div class="field">
+                            <label for="approach">Abordagem / especialidade</label>
+                            <select id="approach" name="approach"></select>
+                            <span class="hint">Muda vocabulário e foco do texto. Um relatório de psicanalista e um de terapeuta TCC não se parecem.</span>
+                        </div>
+                        <div class="field" style="margin-bottom:0">
+                            <label for="styleNotes">Instruções de estilo <span class="optional">(opcional)</span></label>
+                            <textarea id="styleNotes" name="styleNotes" style="min-height:76px"
+                                placeholder="Ex: frases curtas; evite jargão; cite o CID quando informado."></textarea>
+                            <span class="hint">Afeta só a forma de escrever — não autoriza a IA a inventar informação clínica.</span>
+                        </div>
+                    </fieldset>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Salvar Configurações</button>
-            </form>
+                    <fieldset>
+                        <legend>Timbre do documento</legend>
+                        <div class="field">
+                            <label for="clinicName">Nome da clínica <span class="optional">(opcional)</span></label>
+                            <input type="text" id="clinicName" name="clinicName" placeholder="Ex: Clínica Viver Bem">
+                        </div>
+                        <div class="field">
+                            <label for="clinicSubtitle">Endereço / contato <span class="optional">(opcional)</span></label>
+                            <input type="text" id="clinicSubtitle" name="clinicSubtitle" placeholder="Ex: Av. Paulista, 1000 — (11) 99999-9999">
+                        </div>
+                        <div class="field">
+                            <label for="logoInput">Logo <span class="optional">(opcional)</span></label>
+                            <div class="file-drop">
+                                <input type="file" id="logoInput" accept="image/*" data-store="logoData" data-max-w="600" data-max-h="280">
+                                <img id="logoPreview" class="preview-img" alt="Pré-visualização do logo">
+                                <div class="file-actions" id="logoActions">
+                                    <button type="button" class="btn btn-quiet btn-sm" data-remove="logoData">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field" style="margin-bottom:0">
+                            <label for="signatureInput">Assinatura digitalizada <span class="optional">(opcional)</span></label>
+                            <div class="file-drop">
+                                <input type="file" id="signatureInput" accept="image/*" data-store="signatureData" data-max-w="680" data-max-h="240">
+                                <img id="signaturePreview" class="preview-img" alt="Pré-visualização da assinatura">
+                                <div class="file-actions" id="signatureActions">
+                                    <button type="button" class="btn btn-quiet btn-sm" data-remove="signatureData">Remover</button>
+                                </div>
+                            </div>
+                            <span class="hint">Prefira PNG com fundo transparente — fundo branco vira um retângulo sobre o rodapé.</span>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Privacidade e dados</legend>
+                        <div class="check-row" style="margin-top:0">
+                            <input type="checkbox" id="maskNames" name="maskNames" value="1">
+                            <label for="maskNames" style="font-weight:400;margin:0">
+                                Ocultar nomes de pacientes nas listas (mostra “M. S.”).
+                                Útil quando a tela fica visível no consultório.
+                            </label>
+                        </div>
+                        <p class="hint" style="margin-top:var(--s3)">
+                            <span id="storageInfo"></span>
+                            Tudo fica <strong>só neste navegador</strong>, inclusive nomes e o texto dos documentos.
+                            Em computador compartilhado, apague ao terminar.
+                        </p>
+                        <div style="display:flex; gap:var(--s2); flex-wrap:wrap; margin-top:var(--s3)">
+                            <button type="button" class="btn btn-danger btn-sm" id="clearPatients">Apagar pacientes</button>
+                            <button type="button" class="btn btn-danger btn-sm" id="clearHistory">Apagar histórico</button>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%">Salvar configurações</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>Gerando seu documento...</p>
+    <!-- ── Histórico ── -->
+    <div id="historyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+        <div class="modal-content wide">
+            <div class="modal-head">
+                <h3 id="historyTitle">Documentos gerados</h3>
+                <button type="button" class="icon-btn" data-close-modal="historyModal" aria-label="Fechar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="hint" style="margin:0 0 var(--s4)">
+                    Abrir devolve o texto para edição — dá para corrigir e baixar de novo sem gastar nova geração.
+                </p>
+                <div class="stack" id="historyList"></div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        let currentStep = 1;
-        let templates = [];
-        let selectedTemplate = null;
-        let recognition = null;
+    <div id="loading" class="loading" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <p id="loadingText">Processando…</p>
+        <small id="loadingHint"></small>
+    </div>
 
-        // Initialize Web Speech API
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    <div id="toast" role="status" aria-live="polite"></div>
 
-        // DOM Elements
-        const templateGrid = document.getElementById('templateGrid');
-        const dynamicForm = document.getElementById('dynamicForm');
-        const settingsForm = document.getElementById('settingsForm');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-
-        // Load Initial Data
-        window.onload = () => {
-            loadSettings();
-            fetchTemplates();
-        };
-
-        async function fetchTemplates() {
-            try {
-                const response = await fetch('/api/templates');
-                templates = await response.json();
-                renderTemplates();
-            } catch (error) {
-                console.error('Erro ao buscar templates:', error);
-                alert('Não foi possível carregar os templates. Verifique se o servidor está rodando.');
-            }
-        }
-
-        function renderTemplates() {
-            templateGrid.innerHTML = templates.map(t => `
-                <div class="template-card" onclick="selectTemplate('${t.id}')">
-                    <h3>${t.name}</h3>
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Clique para preencher</p>
-                </div>
-            `).join('');
-        }
-
-        function selectTemplate(id) {
-            selectedTemplate = templates.find(t => t.id === id);
-            document.getElementById('currentTemplateName').innerText = selectedTemplate.name;
-            renderFormFields();
-            goToStep(2);
-        }
-
-        function renderFormFields() {
-            dynamicForm.innerHTML = selectedTemplate.fields.map(field => {
-                let inputHtml = '';
-                
-                if (field.type === 'select') {
-                    inputHtml = `
-                        <select name="${field.key}" required>
-                            <option value="">Selecione...</option>
-                            ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-                        </select>
-                    `;
-                } else if (field.type === 'textarea') {
-                    inputHtml = `
-                        <div class="input-wrapper">
-                            <textarea name="${field.key}" placeholder="Digite ou use a voz..." required></textarea>
-                            <button type="button" class="btn-voice" onclick="startVoice(this, '${field.key}')" title="Gravar voz">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    inputHtml = `<input type="${field.type}" name="${field.key}" required>`;
-                }
-
-                return `
-                    <div class="form-group">
-                        <label>${field.label}</label>
-                        ${inputHtml}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function startVoice(btn, fieldKey) {
-            if (!SR) {
-                alert('Seu navegador não suporta reconhecimento de voz. Use Chrome ou Edge.');
-                return;
-            }
-
-            // Se já estiver gravando, para
-            if (recognition) {
-                recognition.stop();
-                return;
-            }
-
-            const textarea = document.querySelector(`textarea[name="${fieldKey}"]`);
-            const baseText = textarea.value;
-
-            recognition = new SR();
-            recognition.lang = 'pt-BR';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onstart = () => {
-                btn.classList.add('recording');
-            };
-
-            recognition.onresult = (event) => {
-                let final = '', interim = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) final += event.results[i][0].transcript + ' ';
-                    else interim += event.results[i][0].transcript;
-                }
-                textarea.value = baseText + final + interim;
-            };
-
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error', event.error);
-                btn.classList.remove('recording');
-                recognition = null;
-            };
-
-            recognition.onend = () => {
-                btn.classList.remove('recording');
-                recognition = null;
-            };
-
-            recognition.start();
-        }
-
-        async function generateDoc() {
-            const formData = new FormData(dynamicForm);
-            const dataObj = {};
-            formData.forEach((value, key) => dataObj[key] = value);
-
-            const settings = JSON.parse(localStorage.getItem('relatorioAppSettings') || '{}');
-            
-            if (!settings.profName) {
-                alert('Por favor, preencha as configurações do profissional antes de gerar.');
-                toggleModal('settingsModal', true);
-                return;
-            }
-
-            loadingOverlay.classList.add('active');
-
-            const body = new FormData();
-            body.append('templateId', selectedTemplate.id);
-            body.append('data', JSON.stringify(dataObj));
-            body.append('clinic', JSON.stringify({
-                name: settings.clinicName,
-                subtitle: settings.clinicSubtitle
-            }));
-            body.append('professional', JSON.stringify({
-                name: settings.profName,
-                title: settings.profTitle,
-                registry: settings.profRegistry
-            }));
-            // Envia imagens como arquivo (Blob) para o backend processar corretamente
-            const logoBlob = dataURLtoBlob(settings.logoData);
-            const sigBlob  = dataURLtoBlob(settings.signatureData);
-            if (logoBlob) body.append('logo', logoBlob, 'logo.png');
-            if (sigBlob)  body.append('signature', sigBlob, 'signature.png');
-
-            try {
-                const response = await fetch('/api/gerar-form', {
-                    method: 'POST',
-                    body: body
-                });
-
-                if (!response.ok) throw new Error('Erro ao gerar documento');
-
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${selectedTemplate.id}_${new Date().getTime()}.docx`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                
-                alert('Documento gerado com sucesso!');
-            } catch (error) {
-                console.error(error);
-                alert('Erro ao gerar o documento. Tente novamente.');
-            } finally {
-                loadingOverlay.classList.remove('active');
-            }
-        }
-
-        // Navigation
-        function goToStep(step) {
-            document.querySelectorAll('.step-container').forEach(c => c.classList.remove('active'));
-            document.getElementById(`step${step}`).classList.add('active');
-            currentStep = step;
-            window.scrollTo(0, 0);
-        }
-
-        // Modal Logic
-        function toggleModal(id, show) {
-            document.getElementById(id).classList.toggle('active', show);
-        }
-
-        // Settings Management
-        settingsForm.onsubmit = (e) => {
-            e.preventDefault();
-            const formData = new FormData(settingsForm);
-            const settings = {};
-            formData.forEach((value, key) => settings[key] = value);
-            
-            localStorage.setItem('relatorioAppSettings', JSON.stringify(settings));
-            alert('Configurações salvas!');
-            toggleModal('settingsModal', false);
-        };
-
-        function loadSettings() {
-            const settings = JSON.parse(localStorage.getItem('relatorioAppSettings') || '{}');
-            if (settings.profName) {
-                for (let key in settings) {
-                    const input = settingsForm.querySelector(`[name="${key}"]`);
-                    if (input) input.value = settings[key];
-                }
-                
-                if (settings.logoData) {
-                    const preview = document.getElementById('logoPreview');
-                    preview.src = settings.logoData;
-                    preview.style.display = 'block';
-                }
-                if (settings.signatureData) {
-                    const preview = document.getElementById('signaturePreview');
-                    preview.src = settings.signatureData;
-                    preview.style.display = 'block';
-                }
-            }
-        }
-
-        function dataURLtoBlob(dataURL) {
-            if (!dataURL || !dataURL.startsWith('data:')) return null;
-            try {
-                const [header, data] = dataURL.split(',');
-                const mime = header.match(/:(.*?);/)[1];
-                const binary = atob(data);
-                const arr = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
-                return new Blob([arr], { type: mime });
-            } catch { return null; }
-        }
-
-        function handleImageUpload(input, previewId, hiddenInputName) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const base64 = e.target.result;
-                    document.getElementById(previewId).src = base64;
-                    document.getElementById(previewId).style.display = 'block';
-                    settingsForm.querySelector(`[name="${hiddenInputName}"]`).value = base64;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
 </body>
 </html>
-

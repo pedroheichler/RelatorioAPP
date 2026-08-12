@@ -1,2 +1,9 @@
 node_modules/
 .env
+.env.local
+.vercel
+
+# Artefatos e material de apoio que não fazem parte do app
+*.zip
+uploads/
+src/docx/*.pdf
